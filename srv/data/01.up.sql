@@ -1,0 +1,28 @@
+CREATE TABLE accounts(
+  id serial PRIMARY KEY,
+  device_id VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  gems INTEGER DEFAULT 0
+);
+CREATE TABLE waifus(
+  mal_id INTEGER UNIQUE NOT NULL,
+  name VARCHAR (100) NOT NULL,
+  url VARCHAR (200) NOT NULL,
+  image_url VARCHAR(200) NOT NULL
+);
+CREATE TABLE account_waifus(
+  account_id INTEGER NOT NULL,
+  waifu_id INTEGER NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE TABLE tags(
+  account_id INTEGER NOT NULL,
+  tag VARCHAR(100) NOT NULL,
+  PRIMARY KEY(account_id, tag)
+);
+CREATE TABLE cycles(
+  account_id INTEGER NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  ended_at TIMESTAMP DEFAULT NULL,
+  tag_id INTEGER DEFAULT NULL
+);
