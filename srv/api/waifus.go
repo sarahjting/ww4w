@@ -7,24 +7,14 @@ import (
 	// "net/url"
 	"html/template"
 	"encoding/json"
-	"strconv"
-	"github.com/sarahjting/willwork4waifu/models/waifus"
+	"github.com/gorilla/context"
+
+	"github.com/sarahjting/ww4w/models/waifus"
 )
 
-func getAccountId(r *http.Request) int {
-	var v map[string]interface{}
-	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
-		log.Fatal(err);
-	}
-	accountId, _ := strconv.Atoi(v["id"].(string))
-	return accountId
-}
-
-func GetWaifus(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+func PostWaifus(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		accountId := getAccountId(r)
-
-		waifus := waifus.List(db, accountId)
+		waifus := waifus.List(db, context.Get(r, "accountId").(int))
 		js, err := json.Marshal(waifus)
 		if err != nil {
 			log.Fatal(err)
@@ -43,10 +33,9 @@ func GetGenerate() func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetGacha(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+func PostGacha(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		accountId := getAccountId(r)
-		waifu, _ := waifus.Gacha(db, accountId)
+		waifu, _ := waifus.Gacha(db, context.Get(r, "accountId").(int))
 		js, err := json.Marshal(waifu)
 		if err != nil {
 			log.Fatal(err)
