@@ -16,11 +16,13 @@ CREATE TABLE account_waifus(
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 CREATE TABLE tags(
+  id SERIAL PRIMARY KEY,
   account_id INTEGER NOT NULL,
   tag VARCHAR(100) NOT NULL,
-  PRIMARY KEY(account_id, tag)
+  UNIQUE(account_id, tag)
 );
 CREATE TABLE cycles(
+  id SERIAL PRIMARY KEY,
   account_id INTEGER NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   ended_at TIMESTAMP DEFAULT NULL,
