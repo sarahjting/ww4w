@@ -8,4 +8,6 @@ Have trouble concentrating on work? Spend too much money on lootboxes? Not anymo
 
 ## Migrations
 
-`psql --file=./srv/data/01.up.sql`
+```
+psql --file=./srv/data/01.up.sql
+```
