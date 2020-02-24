@@ -41,7 +41,8 @@ func main() {
 	}    
 	
 	r := mux.NewRouter()
-    r.HandleFunc("/api/waifus/generate", waifus.GetGenerate()).Methods("GET")
+	r.HandleFunc("/generate", waifus.GetGenerate()).Methods("GET")
+	
     r.HandleFunc("/api/waifus/gacha", waifus.PostGacha(db)).Methods("POST")
     r.HandleFunc("/api/waifus/list", waifus.PostWaifus(db)).Methods("POST")
     r.HandleFunc("/api/cycles/start", cycles.PostStart(db)).Methods("POST")
