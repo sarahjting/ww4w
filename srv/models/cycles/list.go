@@ -8,7 +8,9 @@ func List(db *sql.DB, accountId int) (cycles []Cycle) {
 	rows, err := db.Query(`SELECT cycles.id AS ID, cycles.created_at AS CreatedAt, cycles.ended_at AS EndedAt, tags.tag AS Tag, is_ended AS IsEnded
 		FROM cycles 
 		LEFT JOIN tags ON cycles.tag_id = tags.id
-		WHERE cycles.account_id = $1 AND cycles.created_at > NOW() - INTERVAL '1 WEEK'
+		WHERE cycles.account_id = $1 
+			AND is_ended = TRUE
+			AND cycles.created_at > NOW() - INTERVAL '1 WEEK'
 		ORDER BY id DESC`, accountId)
 	if(err != nil) {
 		log.Fatal(err)
