@@ -19,6 +19,7 @@ class _TimerState extends State<TimerWidget> {
   CycleManager _manager;
   int _secondsLeft;
   var _setGems;
+  var _timer;
 
   _TimerState(this._setGems);
 
@@ -59,7 +60,7 @@ class _TimerState extends State<TimerWidget> {
   void _updateCountdown() {
     if (_currentCycle == null) return;
     setState(() => _secondsLeft = _currentCycle.secondsLeft());
-    Timer(Duration(seconds: 1), _updateCountdown);
+    _timer = Timer(Duration(seconds: 1), _updateCountdown);
   }
 
   void _loadTimer() async {
@@ -79,6 +80,12 @@ class _TimerState extends State<TimerWidget> {
     super.initState();
     _manager = new CycleManager();
     _loadTimer();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 
   @override

@@ -28,6 +28,7 @@ class AppState extends State<App> {
 
   Widget build(BuildContext context) {
     TimerWidget timerTab = TimerWidget(setGems);
+    GachaWidget gachaTab = GachaWidget(setGems, getGems);
     return MaterialApp(
       title: 'Will Work For Waifus',
       theme: ThemeData(
@@ -51,7 +52,7 @@ class AppState extends State<App> {
                 Tab(text: "History", icon: Icon(Icons.insert_chart)),
               ])),
           body: TabBarView(
-            children: [timerTab, timerTab, timerTab, timerTab],
+            children: [timerTab, gachaTab, timerTab, timerTab],
           ),
         ),
       ),
