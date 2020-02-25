@@ -35,6 +35,13 @@ func parseAccountId(db *sql.DB) (func(next http.Handler) http.Handler) {
 	}
 }
 
+func allowCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		next.ServeHTTP(w, r)
+	});
+}
+
 func main() {
 	config := config.GetConf()
 	db, err := sql.Open("postgres", config.DBUrl)
@@ -54,6 +61,7 @@ func main() {
 	http.Handle("/", r)
 	
 	r.Use(parseAccountId(db))
+	r.Use(allowCORS)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
