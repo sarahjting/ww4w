@@ -1,6 +1,7 @@
 package waifus
 
 import (
+	"log"
 	"net/http"
 	"html/template"
 	"github.com/sarahjting/ww4w/models/waifus"
@@ -9,7 +10,8 @@ import (
 func GetGenerate() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		waifu := waifus.Generate()
-		t, _ := template.ParseFiles("waifu.html")
+		t, err := template.ParseFiles("waifu.html")
+		log.Println(err)
 		t.Execute(w, waifu)
 	}
 }

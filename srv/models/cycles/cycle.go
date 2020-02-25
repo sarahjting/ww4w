@@ -5,4 +5,5 @@ type Cycle struct {
 	Tag string
 	CreatedAt string
 	EndedAt string
+	IsEnded bool
 }

@@ -7,7 +7,7 @@ import (
 
 func Start(db *sql.DB, accountId int, data map[string]interface{}) (returnError error) {
 	var tagId int = 0
-	db.Query(`DELETE FROM cycles WHERE account_id = $1 AND ended_at IS NULL`, accountId)
+	db.Query(`DELETE FROM cycles WHERE account_id = $1 AND is_ended = FALSE`, accountId)
 	var tag string = strings.TrimSpace(data["tag"].(string));
 	if(tag != "") {
 		row := db.QueryRow(`SELECT id FROM tags WHERE account_id = $1 AND tag = $2`, accountId, tag)

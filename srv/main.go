@@ -20,14 +20,16 @@ import (
 func parseAccountId(db *sql.DB) (func(next http.Handler) http.Handler) {
 	return func (next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			var v map[string]interface{}
-			if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
-				log.Fatal(err);
+			if(r.Body != http.NoBody) {
+				var v map[string]interface{}
+				if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
+					log.Fatal(err);
+				}
+				account, _ := accounts.GetByDeviceId(db, v["id"].(string))
+				context.Set(r, "body", v)
+				context.Set(r, "account", account)
+				context.Set(r, "account_id", account.ID)
 			}
-			account, _ := accounts.GetByDeviceId(db, v["id"].(string))
-			context.Set(r, "body", v)
-			context.Set(r, "account", account)
-			context.Set(r, "account_id", account.ID)
 			next.ServeHTTP(w, r)
 		})
 	}
@@ -48,6 +50,7 @@ func main() {
     r.HandleFunc("/api/cycles/start", cycles.PostStart(db)).Methods("POST")
     r.HandleFunc("/api/cycles/end", cycles.PostEnd(db)).Methods("POST")
     r.HandleFunc("/api/cycles/list", cycles.PostList(db)).Methods("POST")
+    r.HandleFunc("/api/cycles/current", cycles.PostCurrent(db)).Methods("POST")
 	http.Handle("/", r)
 	
 	r.Use(parseAccountId(db))
