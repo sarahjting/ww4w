@@ -22,6 +22,7 @@ class CycleManager extends Manager {
   Future<Map<String, dynamic>> start({tag}) async {
     http.Response res = await this.post("cycles/start", {"tag": tag});
     final parsed = json.decode(res.body) as Map<String, dynamic>;
+    parsed["Cycle"] = Cycle.fromJson(parsed["Cycle"]);
     return parsed;
   }
 

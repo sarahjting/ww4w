@@ -24,11 +24,27 @@ class Cycle {
     return secondsLeft;
   }
 
+  String countDowner() {
+    int secondsLeft = this.secondsLeft();
+    int minutesLeft = (secondsLeft / 60).floor();
+    secondsLeft = secondsLeft - minutesLeft * 60;
+    return minutesLeft.toString().padLeft(2, "0") +
+        ":" +
+        secondsLeft.toString().padLeft(2, "0");
+  }
+
   bool isToday() {
     final DateTime now = DateTime.now();
     return DateTime(createdAt.year, createdAt.month, createdAt.day)
             .difference(DateTime(now.year, now.month, now.day))
             .inDays ==
         0;
+  }
+
+  double progress() {
+    final double progress =
+        DateTime.now().difference(createdAt).inSeconds / (60 * 25);
+    if (progress > 1) return 1.0;
+    return progress;
   }
 }

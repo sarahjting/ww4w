@@ -4,6 +4,7 @@ import 'Loading.dart';
 import 'dart:async';
 import '../models/Cycle.dart';
 import '../utils/CycleManager.dart';
+import 'dart:math' show pi;
 
 class TimerWidget extends StatefulWidget {
   var _setGems;
@@ -130,26 +131,93 @@ class _TimerState extends State<TimerWidget> {
   }
 
   Widget _buildActive(BuildContext context) {
-    List<Widget> widgets = <Widget>[
-      Text("Work cycle in progress..."),
-      Text(_secondsLeft.toString() + "s"),
-    ];
+    List<Widget> widgets = <Widget>[];
+    widgets.add(Text(
+      "Work cycle in progress...",
+      style: Theme.of(context).textTheme.headline5,
+    ));
+    widgets.add(Text(
+      _currentCycle.countDowner(),
+      style: Theme.of(context).textTheme.headline1,
+    ));
     if (_secondsLeft == 0) {
-      widgets.add(RaisedButton(
-        onPressed: () {
-          _handleEnd(context);
-        },
-        child: Text("Complete Cycle"),
-      ));
-    }
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(50.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: widgets,
+      widgets.add(SizedBox.expand(
+        child: RaisedButton(
+          onPressed: () => _handleEnd(context),
+          child: Text("Complete Cycle"),
+          textColor: Colors.white,
+          color: Colors.pink,
         ),
+      ));
+    } else {
+      widgets.add(Text(""));
+    }
+    widgets.add(RaisedButton(
+        onPressed: () => _handleEnd(context),
+        child: Text("Cancel Cycle"),
+        textColor: Colors.grey[500],
+        color: Colors.grey[200]));
+
+    return Padding(
+      padding: EdgeInsets.all(50.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+              child: Align(
+                  alignment: FractionalOffset.center,
+                  child: AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: TimerPainter(
+                                progress: _currentCycle.progress(),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: FractionalOffset.center,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 100),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: widgets,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ))))
+        ],
       ),
     );
+  }
+}
+
+class TimerPainter extends CustomPainter {
+  double progress = 0;
+
+  TimerPainter({this.progress}) : super();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.grey[200]
+      ..strokeWidth = 20.0
+      ..strokeCap = StrokeCap.butt
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawCircle(size.center(Offset.zero), size.width / 2.0, paint);
+    paint.color = Colors.pink;
+    double progress = this.progress * 2 * pi;
+    canvas.drawArc(Offset.zero & size, pi * 1.5, progress, false, paint);
+  }
+
+  @override
+  bool shouldRepaint(TimerPainter old) {
+    return progress != old.progress;
   }
 }
