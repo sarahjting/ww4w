@@ -141,11 +141,16 @@ class _TimerState extends State<TimerWidget> {
                 labelText: 'Task',
               ),
             ),
-            RaisedButton(
-              onPressed: () {
-                _handleStart(context, tagController.text);
-              },
-              child: Text('Start Work'),
+            FractionallySizedBox(
+              widthFactor: 1.0,
+              child: RaisedButton(
+                onPressed: () => _handleStart(context, tagController.text),
+                color: Colors.pink,
+                child: Text(
+                  'Start Work',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ),
           ],
         ),
