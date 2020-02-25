@@ -56,6 +56,7 @@ func main() {
     r.HandleFunc("/api/waifus/list", waifus.PostWaifus(db)).Methods("POST")
     r.HandleFunc("/api/cycles/start", cycles.PostStart(db)).Methods("POST")
     r.HandleFunc("/api/cycles/end", cycles.PostEnd(db)).Methods("POST")
+    r.HandleFunc("/api/cycles/cancel", cycles.PostCancel(db)).Methods("POST")
     r.HandleFunc("/api/cycles/list", cycles.PostList(db)).Methods("POST")
     r.HandleFunc("/api/cycles/current", cycles.PostCurrent(db)).Methods("POST")
 	http.Handle("/", r)

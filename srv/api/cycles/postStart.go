@@ -11,7 +11,7 @@ import (
 type PostStartResult struct {
 	Status bool
 	Error string
-	Cycle: cycles.Cycle
+	Cycle cycles.Cycle
 }
 
 func PostStart(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +22,7 @@ func PostStart(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			cycle := cycles.Current(db, context.Get(r, "account_id").(int))
 			js, _ = json.Marshal(PostStartResult{ Status: true, Cycle: cycle })
 		} else {
-			js, _ = json.Marshal(PostEndResult{ Status: false, Error: err.Error() })
+			js, _ = json.Marshal(PostStartResult{ Status: false, Error: err.Error() })
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(js)
