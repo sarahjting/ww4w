@@ -23,4 +23,12 @@ class Cycle {
     if (secondsLeft < 0) return 0;
     return secondsLeft;
   }
+
+  bool isToday() {
+    final DateTime now = DateTime.now();
+    return DateTime(createdAt.year, createdAt.month, createdAt.day)
+            .difference(DateTime(now.year, now.month, now.day))
+            .inDays ==
+        0;
+  }
 }
