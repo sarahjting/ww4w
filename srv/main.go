@@ -50,6 +50,7 @@ func main() {
 	}    
 	
 	r := mux.NewRouter()
+
 	r.HandleFunc("/generate", waifus.GetGenerate()).Methods("GET")
 	
     r.HandleFunc("/api/waifus/gacha", waifus.PostGacha(db)).Methods("POST")
@@ -59,6 +60,7 @@ func main() {
     r.HandleFunc("/api/cycles/cancel", cycles.PostCancel(db)).Methods("POST")
     r.HandleFunc("/api/cycles/list", cycles.PostList(db)).Methods("POST")
     r.HandleFunc("/api/cycles/current", cycles.PostCurrent(db)).Methods("POST")
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("../app/build/web/")))
 	http.Handle("/", r)
 	
 	r.Use(parseAccountId(db))
