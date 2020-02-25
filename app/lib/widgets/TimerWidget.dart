@@ -156,73 +156,77 @@ class _TimerState extends State<TimerWidget> {
   Widget _buildActive(BuildContext context) {
     List<Widget> widgets = <Widget>[];
     widgets.add(Text(
-      "Work cycle in progress...",
-      style: Theme.of(context).textTheme.headline5,
-    ));
-    widgets.add(Text(
       _currentCycle.countDowner(),
       style: Theme.of(context).textTheme.headline1,
     ));
     if (_secondsLeft == 0) {
-      widgets.add(FractionallySizedBox(
-        widthFactor: 0.7,
-        child: RaisedButton(
-          onPressed: () => _handleEnd(context),
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Text(
-              "Complete Cycle",
-              style: TextStyle(fontSize: 30.0, color: Colors.white),
+      widgets.add(
+        Padding(
+          padding: EdgeInsets.only(bottom: 10),
+          child: RaisedButton(
+            onPressed: () => _handleEnd(context),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Text(
+                "Complete Cycle",
+                style: TextStyle(fontSize: 30.0, color: Colors.white),
+              ),
             ),
+            textColor: Colors.white,
+            color: Colors.pink,
           ),
-          textColor: Colors.white,
-          color: Colors.pink,
         ),
-      ));
+      );
     } else {
       widgets.add(Text(""));
     }
     widgets.add(RaisedButton(
         onPressed: () => _handleCancel(context),
-        child: Text("Cancel Cycle"),
+        child: Text("Cancel Cycle", style: TextStyle(fontSize: 12)),
         textColor: Colors.grey[500],
         color: Colors.grey[200]));
 
-    return Padding(
-      padding: EdgeInsets.all(50.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Expanded(
-              child: Align(
-                  alignment: FractionalOffset.center,
-                  child: AspectRatio(
-                      aspectRatio: 1.0,
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned.fill(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Expanded(
+            child: Align(
+                alignment: FractionalOffset.center,
+                child: AspectRatio(
+                    aspectRatio: 1.0,
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned.fill(
+                          child: Padding(
+                            padding: EdgeInsets.all(50.0),
                             child: CustomPaint(
                               painter: TimerPainter(
                                 progress: _currentCycle.progress(),
                               ),
                             ),
                           ),
-                          Align(
+                        ),
+                        Align(
                             alignment: FractionalOffset.center,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 100),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: widgets,
+                              padding: EdgeInsets.symmetric(
+                                vertical: 100,
+                                horizontal: 100.0,
                               ),
-                            ),
-                          ),
-                        ],
-                      ))))
-        ],
-      ),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: AlignmentDirectional.centerStart,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: widgets,
+                                ),
+                              ),
+                            )),
+                      ],
+                    ))))
+      ],
     );
   }
 }
