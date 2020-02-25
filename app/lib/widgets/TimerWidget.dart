@@ -6,8 +6,11 @@ import '../models/Cycle.dart';
 import '../utils/CycleManager.dart';
 
 class TimerWidget extends StatefulWidget {
+  var _setGems;
+  TimerWidget(this._setGems);
+
   @override
-  _TimerState createState() => _TimerState();
+  _TimerState createState() => _TimerState(_setGems);
 }
 
 class _TimerState extends State<TimerWidget> {
@@ -15,8 +18,9 @@ class _TimerState extends State<TimerWidget> {
   Cycle _currentCycle;
   CycleManager _manager;
   int _secondsLeft;
+  var _setGems;
 
-  _TimerState();
+  _TimerState(this._setGems);
 
   void _handleStart(context, String tag) async {
     setState(() => _isLoading = true);
@@ -37,6 +41,7 @@ class _TimerState extends State<TimerWidget> {
     Map<String, dynamic> res = await _manager.end();
     if (res["Status"]) {
       _popSnackbar(context, "Great work! You've gained a gem.");
+      _setGems(res["Gems"]);
       setState(() {
         _currentCycle = null;
         _isLoading = false;
@@ -59,8 +64,8 @@ class _TimerState extends State<TimerWidget> {
 
   void _loadTimer() async {
     Map<String, dynamic> res = await _manager.current();
+    _setGems(res["Gems"]);
     setState(() {
-      print('setting state');
       if (res["Cycle"] != null) {
         _currentCycle = res["Cycle"];
       }

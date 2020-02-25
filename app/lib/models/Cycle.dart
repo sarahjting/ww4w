@@ -7,6 +7,7 @@ class Cycle {
   Cycle({this.id, this.tag, this.createdAt, this.endedAt});
 
   factory Cycle.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
     if (json["ID"] == 0) return null;
     return Cycle(
       id: json['ID'],
