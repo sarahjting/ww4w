@@ -141,10 +141,17 @@ class _TimerState extends State<TimerWidget> {
       style: Theme.of(context).textTheme.headline1,
     ));
     if (_secondsLeft == 0) {
-      widgets.add(SizedBox.expand(
+      widgets.add(FractionallySizedBox(
+        widthFactor: 0.7,
         child: RaisedButton(
           onPressed: () => _handleEnd(context),
-          child: Text("Complete Cycle"),
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+              "Complete Cycle",
+              style: TextStyle(fontSize: 30.0, color: Colors.white),
+            ),
+          ),
           textColor: Colors.white,
           color: Colors.pink,
         ),
