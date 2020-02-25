@@ -164,6 +164,14 @@ class _TimerState extends State<TimerWidget> {
       _currentCycle.countDowner(),
       style: Theme.of(context).textTheme.headline1,
     ));
+    if (_currentCycle.tag != "") {
+      widgets.add(Padding(
+          padding: EdgeInsets.only(bottom: 20),
+          child: Text(
+            _currentCycle.tag,
+            style: TextStyle(fontSize: 30.0, color: Colors.grey[500]),
+          )));
+    }
     if (_secondsLeft == 0) {
       widgets.add(
         Padding(
@@ -187,7 +195,7 @@ class _TimerState extends State<TimerWidget> {
     }
     widgets.add(RaisedButton(
         onPressed: () => _handleCancel(context),
-        child: Text("Cancel Cycle", style: TextStyle(fontSize: 12)),
+        child: Text("Cancel", style: TextStyle(fontSize: 20.0)),
         textColor: Colors.grey[500],
         color: Colors.grey[200]));
 
