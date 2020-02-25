@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'widgets/TimerWidget.dart';
 import 'widgets/GachaWidget.dart';
+import 'widgets/GalleryWidget.dart';
 
 Future main() async {
   await DotEnv().load('.env');
@@ -29,6 +30,7 @@ class AppState extends State<App> {
   Widget build(BuildContext context) {
     TimerWidget timerTab = TimerWidget(setGems);
     GachaWidget gachaTab = GachaWidget(setGems, getGems);
+    GalleryWidget galleryTab = GalleryWidget();
     return MaterialApp(
       title: 'Will Work For Waifus',
       theme: ThemeData(
@@ -52,7 +54,7 @@ class AppState extends State<App> {
                 Tab(text: "History", icon: Icon(Icons.insert_chart)),
               ])),
           body: TabBarView(
-            children: [timerTab, gachaTab, timerTab, timerTab],
+            children: [timerTab, gachaTab, galleryTab, timerTab],
           ),
         ),
       ),

@@ -25,8 +25,8 @@ class _GachaState extends State<GachaWidget> {
     Map<String, dynamic> res = await _manager.gacha();
     setState(() => _isLoading = false);
     if (res["Status"]) {
-      _popDialog(context, waifu: res["Waifu"]);
       _setGems(res["Gems"]);
+      _popDialog(context, waifu: res["Waifu"]);
     } else {
       _popDialog(context, error: res["Error"]);
     }
@@ -51,6 +51,10 @@ class _GachaState extends State<GachaWidget> {
           ]),
         ),
         actions: [
+          FlatButton(
+            child: Text(_getGems().toString() + " Gems left"),
+            onPressed: () {},
+          ),
           RaisedButton(
             child: Text("Pull Again"),
             onPressed: () {

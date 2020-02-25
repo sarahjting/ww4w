@@ -6,7 +6,7 @@ import '../models/Waifu.dart';
 class WaifuManager extends Manager {
   Future<Map<String, dynamic>> list() async {
     http.Response res = await this.post("waifus/list");
-    final parsed = json.decode(res.body).cast<Map<String, dynamic>>();
+    final parsed = json.decode(res.body) as Map<String, dynamic>;
     parsed["Waifus"] =
         parsed["Waifus"].map<Waifu>((json) => Waifu.fromJson(json)).toList();
     return parsed;

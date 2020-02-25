@@ -31,6 +31,7 @@ class _TimerState extends State<TimerWidget> {
       setState(() {
         _currentCycle = res["Cycle"];
         _isLoading = false;
+        _updateCountdown();
       });
     } else {
       _popSnackbar(context, "Error: " + res["Error"]);
@@ -85,7 +86,10 @@ class _TimerState extends State<TimerWidget> {
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    }
   }
 
   @override
