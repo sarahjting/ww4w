@@ -60,7 +60,7 @@ func main() {
     r.HandleFunc("/api/cycles/cancel", cycles.PostCancel(db)).Methods("POST")
     r.HandleFunc("/api/cycles/list", cycles.PostList(db)).Methods("POST")
     r.HandleFunc("/api/cycles/current", cycles.PostCurrent(db)).Methods("POST")
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("../app/build/web/")))
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
 	http.Handle("/", r)
 	
 	r.Use(parseAccountId(db))
