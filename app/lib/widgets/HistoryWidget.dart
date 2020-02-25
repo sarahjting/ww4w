@@ -38,6 +38,15 @@ class _HistoryState extends State<HistoryWidget> {
   }
 
   Widget _build(BuildContext context) {
+    if (_cycles == null || _cycles.length == 0)
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text("You haven't done any work yet!"),
+          ],
+        ),
+      );
     return Column(children: <Widget>[
       Padding(
         padding: EdgeInsets.only(top: 30.0, bottom: 20.0),

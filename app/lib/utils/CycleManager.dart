@@ -7,8 +7,9 @@ class CycleManager extends Manager {
   Future<Map<String, dynamic>> list() async {
     http.Response res = await this.post("cycles/list");
     final parsed = json.decode(res.body) as Map<String, dynamic>;
-    parsed["Cycles"] =
-        parsed["Cycles"].map<Cycle>((json) => Cycle.fromJson(json)).toList();
+    if (parsed["Cycles"] != null)
+      parsed["Cycles"] =
+          parsed["Cycles"].map<Cycle>((json) => Cycle.fromJson(json)).toList();
     return parsed;
   }
 
