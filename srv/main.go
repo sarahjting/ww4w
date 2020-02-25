@@ -66,5 +66,5 @@ func main() {
 	r.Use(parseAccountId(db))
 	r.Use(allowCORS)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":" + config.Port, nil))
 }
