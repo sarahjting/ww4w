@@ -7,8 +7,9 @@ class WaifuManager extends Manager {
   Future<Map<String, dynamic>> list() async {
     http.Response res = await this.post("waifus/list");
     final parsed = json.decode(res.body) as Map<String, dynamic>;
-    parsed["Waifus"] =
-        parsed["Waifus"].map<Waifu>((json) => Waifu.fromJson(json)).toList();
+    if (parsed["Waifus"] != null)
+      parsed["Waifus"] =
+          parsed["Waifus"].map<Waifu>((json) => Waifu.fromJson(json)).toList();
     return parsed;
   }
 

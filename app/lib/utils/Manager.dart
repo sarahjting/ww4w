@@ -4,12 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:random_string/random_string.dart';
-import 'package:localstorage/localstorage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class Manager {
-  final LocalStorage storage = new LocalStorage('storage');
-
   String getUrl(String uri) {
     String root = DotEnv().env['SERVER_ROOT'];
     if (root == null) root = "/api/";
@@ -18,10 +16,12 @@ class Manager {
 
   Future<http.Response> post(url, [body]) async {
     if (body == null) body = {};
-    if (storage.getItem("device-id") == null) {
-      storage.setItem("device-id", await getDeviceId());
+
+    final sharedPref = await SharedPreferences.getInstance();
+    if (sharedPref.getString("device-id") == null) {
+      sharedPref.setString("device-id", await getDeviceId());
     }
-    String deviceId = storage.getItem("device-id");
+    String deviceId = sharedPref.getString("device-id");
     body["id"] = deviceId;
     return http.post(
       getUrl(url),
@@ -37,7 +37,7 @@ class Manager {
 
   //https://stackoverflow.com/questions/45031499/how-to-get-unique-device-id-in-flutter
   Future<String> getDeviceId() async {
-    String identifier = "1";
+    String identifier = randomString(10);
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
     try {
       if (Platform.isAndroid) {
