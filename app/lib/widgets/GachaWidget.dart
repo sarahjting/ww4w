@@ -56,11 +56,15 @@ class _GachaState extends State<GachaWidget> {
             onPressed: () {},
           ),
           RaisedButton(
-            child: Text("Pull Again"),
+            color: Colors.pink,
             onPressed: () {
               Navigator.pop(context);
               _handleGacha(context);
             },
+            child: Text(
+              "Again!",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       );
@@ -99,13 +103,25 @@ class _GachaState extends State<GachaWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.star),
-            Text("You have " + _getGems().toString() + " gems."),
-            RaisedButton(
-                onPressed: () {
-                  _handleGacha(context);
-                },
-                child: Text("Boom"))
+            Text(
+              _getGems().toString(),
+              style: Theme.of(context).textTheme.headline1,
+            ),
+            Text("gems to spend", style: Theme.of(context).textTheme.headline5),
+            Padding(
+              padding: EdgeInsets.only(top: 50.0),
+              child: RaisedButton(
+                color: Colors.pink,
+                onPressed: () => _handleGacha(context),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    "Gacha!",
+                    style: TextStyle(fontSize: 30.0, color: Colors.white),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
