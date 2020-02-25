@@ -38,6 +38,15 @@ class _GalleryState extends State<GalleryWidget> {
   }
 
   Widget _build(BuildContext context) {
+    if (_waifus == null || _waifus.length == 0)
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text("You don't have any waifus yet!"),
+          ],
+        ),
+      );
     return GridView.count(
       crossAxisCount: 3,
       mainAxisSpacing: 8,
