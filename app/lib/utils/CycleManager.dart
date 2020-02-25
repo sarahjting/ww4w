@@ -31,4 +31,10 @@ class CycleManager extends Manager {
     final parsed = json.decode(res.body) as Map<String, dynamic>;
     return parsed;
   }
+
+  Future<Map<String, dynamic>> cancel() async {
+    http.Response res = await this.post("cycles/cancel");
+    final parsed = json.decode(res.body) as Map<String, dynamic>;
+    return parsed;
+  }
 }

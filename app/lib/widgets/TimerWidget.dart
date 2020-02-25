@@ -36,6 +36,9 @@ class _TimerState extends State<TimerWidget> {
       });
     } else {
       _popSnackbar(context, "Error: " + res["Error"]);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -51,6 +54,26 @@ class _TimerState extends State<TimerWidget> {
       });
     } else {
       _popSnackbar(context, "Error: " + res["Error"]);
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _handleCancel(context) async {
+    setState(() => _isLoading = true);
+    Map<String, dynamic> res = await _manager.cancel();
+    if (res["Status"]) {
+      _popSnackbar(context, "Work cycle has been canceled.");
+      setState(() {
+        _currentCycle = null;
+        _isLoading = false;
+      });
+    } else {
+      _popSnackbar(context, "Error: " + res["Error"]);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -160,7 +183,7 @@ class _TimerState extends State<TimerWidget> {
       widgets.add(Text(""));
     }
     widgets.add(RaisedButton(
-        onPressed: () => _handleEnd(context),
+        onPressed: () => _handleCancel(context),
         child: Text("Cancel Cycle"),
         textColor: Colors.grey[500],
         color: Colors.grey[200]));
