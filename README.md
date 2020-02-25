@@ -27,3 +27,14 @@ cd srv && go build && cd ..
 ```
 
 6. Check out the waifu generator at `http://localhost:8080/generate`
+
+# Building the frontend
+
+1. Install [flutter](https://flutter.dev/docs/get-started/install) if you haven't yet done so.
+1. Point `.env` to your backend.
+1. Build to platform of choice using `flutter build [platform]`.
+1. You can build a web application running off localhost by copying a web build into `srv/static`; this will serve the client at `http://localhost:8080/`:
+
+```
+cd app && flutter build web && cd .. && cp -r app/build/web/* srv/static/
+```

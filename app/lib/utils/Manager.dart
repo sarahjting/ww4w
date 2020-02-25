@@ -10,6 +10,12 @@ import 'dart:convert';
 class Manager {
   final LocalStorage storage = new LocalStorage('storage');
 
+  String getUrl(String uri) {
+    String root = DotEnv().env['SERVER_ROOT'];
+    if (root == null) root = "/api/";
+    return root + uri;
+  }
+
   Future<http.Response> post(url, [body]) async {
     if (body == null) body = {};
     if (storage.getItem("device-id") == null) {
@@ -18,14 +24,14 @@ class Manager {
     String deviceId = storage.getItem("device-id");
     body["id"] = deviceId;
     return http.post(
-      DotEnv().env['SERVER_ROOT'] + url,
+      getUrl(url),
       body: json.encode(body),
     );
   }
 
   Future<http.Response> get(url) async {
     return http.get(
-      DotEnv().env['SERVER_ROOT'] + url,
+      getUrl(url),
     );
   }
 
