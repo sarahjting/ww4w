@@ -7,7 +7,8 @@ import (
 func List(db *sql.DB, accountId int) (waifus []Waifu) {
 	rows, err := db.Query(`SELECT waifus.mal_id AS MALID, waifus.name  AS Name, waifus.image_url AS ImageURL, waifus.url AS URL
 		FROM waifus JOIN account_waifus ON account_waifus.waifu_id = waifus.mal_id 
-		WHERE account_waifus.account_id = $1`, accountId)
+		WHERE account_waifus.account_id = $1
+		ORDER BY account_waifus.created_at DESC`, accountId)
 	if(err != nil) {
 		log.Fatal(err)
 	}
