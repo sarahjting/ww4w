@@ -55,6 +55,7 @@ func main() {
 	
     r.HandleFunc("/api/waifus/gacha", waifus.PostGacha(db)).Methods("POST")
     r.HandleFunc("/api/waifus/list", waifus.PostWaifus(db)).Methods("POST")
+    r.HandleFunc("/api/cycles/tags", cycles.PostTags(db)).Methods("POST")
     r.HandleFunc("/api/cycles/start", cycles.PostStart(db)).Methods("POST")
     r.HandleFunc("/api/cycles/end", cycles.PostEnd(db)).Methods("POST")
     r.HandleFunc("/api/cycles/cancel", cycles.PostCancel(db)).Methods("POST")

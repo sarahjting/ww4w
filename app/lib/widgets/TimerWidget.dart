@@ -6,6 +6,7 @@ import '../models/Cycle.dart';
 import '../models/Break.dart';
 import '../utils/CycleManager.dart';
 import '../utils/BreakManager.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'dart:math' show pi;
 
 class TimerWidget extends StatefulWidget {
