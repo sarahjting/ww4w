@@ -13,6 +13,14 @@ class CycleManager extends Manager {
     return parsed;
   }
 
+  Future<List<String>> tags() async {
+    http.Response res = await this.post("cycles/tags");
+    final parsed = json.decode(res.body) as Map<String, dynamic>;
+    List<String> tags = parsed["Tags"].map<String>((x) => x as String).toList();
+    if (tags == null) tags = List<String>();
+    return tags;
+  }
+
   Future<Map<String, dynamic>> current() async {
     http.Response res = await this.post("cycles/current");
     final parsed = json.decode(res.body) as Map<String, dynamic>;

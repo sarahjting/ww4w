@@ -23,6 +23,7 @@ class _TimerState extends State<TimerWidget> {
   Break _currentBreak;
   CycleManager _cycleManager;
   BreakManager _breakManager;
+  List<String> _tags;
   int _secondsLeft;
   var _setGems;
   var _timer;
@@ -35,6 +36,7 @@ class _TimerState extends State<TimerWidget> {
     if (res["Status"]) {
       _popSnackbar(context, "Cycle started. Time to work!");
       setState(() {
+        if (tag != '') _tags.add(tag);
         _currentCycle = res["Cycle"];
         _isLoading = false;
         _updateCountdown();
@@ -117,6 +119,7 @@ class _TimerState extends State<TimerWidget> {
   void _loadTimer() async {
     Map<String, dynamic> cycleRes = await _cycleManager.current();
     Break breakRes = await _breakManager.current();
+    List<String> tags = await _cycleManager.tags();
     _setGems(cycleRes["Gems"]);
     setState(() {
       if (cycleRes["Cycle"] != null) {
@@ -124,6 +127,7 @@ class _TimerState extends State<TimerWidget> {
       } else if (breakRes != null) {
         _currentBreak = breakRes;
       }
+      _tags = tags;
       _isLoading = false;
     });
     _updateCountdown();
@@ -199,6 +203,7 @@ class _TimerState extends State<TimerWidget> {
   }
 
   Widget _buildInactive(BuildContext context) {
+    print(_tags);
     final tagController = TextEditingController();
     return Center(
       child: Padding(
@@ -206,8 +211,18 @@ class _TimerState extends State<TimerWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
+            AutoCompleteTextField<String>(
               controller: tagController,
+              suggestions: _tags,
+              itemSubmitted: (item) => tagController.text = item,
+              submitOnSuggestionTap: false,
+              minLength: 0,
+              itemBuilder: (context, suggestion) => new Padding(
+                  child: new ListTile(title: new Text(suggestion)),
+                  padding: EdgeInsets.all(8.0)),
+              itemSorter: (a, b) => a.compareTo(b),
+              itemFilter: (item, query) =>
+                  item.toLowerCase().indexOf(query.toLowerCase()) != -1,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "What're you working on?",
