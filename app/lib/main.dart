@@ -5,6 +5,7 @@ import 'widgets/TimerWidget.dart';
 import 'widgets/GachaWidget.dart';
 import 'widgets/GalleryWidget.dart';
 import 'widgets/HistoryWidget.dart';
+import 'widgets/SettingsWidget.dart';
 
 Future main() async {
   await DotEnv().load('.env');
@@ -33,13 +34,14 @@ class AppState extends State<App> {
     GachaWidget gachaTab = GachaWidget(setGems, getGems);
     GalleryWidget galleryTab = GalleryWidget();
     HistoryWidget historyTab = HistoryWidget();
+    SettingsWidget settingsTab = SettingsWidget();
     return MaterialApp(
       title: 'Will Work For Waifus',
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
       home: DefaultTabController(
-        length: 4,
+        length: 5,
         child: Scaffold(
           appBar: AppBar(
               title: Text("WW4W"),
@@ -50,13 +52,14 @@ class AppState extends State<App> {
                     child: Text(_gems.toString() + " Gems")),
               ],
               bottom: TabBar(isScrollable: false, tabs: [
-                Tab(text: "Timer", icon: Icon(Icons.alarm)),
-                Tab(text: "Gacha", icon: Icon(Icons.star)),
-                Tab(text: "Collect", icon: Icon(Icons.view_module)),
-                Tab(text: "History", icon: Icon(Icons.insert_chart)),
+                Tab(icon: Icon(Icons.alarm)),
+                Tab(icon: Icon(Icons.star)),
+                Tab(icon: Icon(Icons.view_module)),
+                Tab(icon: Icon(Icons.insert_chart)),
+                Tab(icon: Icon(Icons.settings)),
               ])),
           body: TabBarView(
-            children: [timerTab, gachaTab, galleryTab, historyTab],
+            children: [timerTab, gachaTab, galleryTab, historyTab, settingsTab],
           ),
         ),
       ),
