@@ -17,11 +17,11 @@ class Manager {
   Future<http.Response> post(url, [body]) async {
     if (body == null) body = {};
 
-    final sharedPref = await SharedPreferences.getInstance();
-    if (sharedPref.getString("device-id") == null) {
-      sharedPref.setString("device-id", await getDeviceId());
+    String deviceId = await getLocalStorage("device-id");
+    if (deviceId == null) {
+      deviceId = await _getDeviceId();
+      setLocalStorage("device-id", deviceId);
     }
-    String deviceId = sharedPref.getString("device-id");
     body["id"] = deviceId;
     return http.post(
       getUrl(url),
@@ -35,8 +35,18 @@ class Manager {
     );
   }
 
+  Future<String> getLocalStorage(key) async {
+    final sharedPref = await SharedPreferences.getInstance();
+    return sharedPref.getString(key);
+  }
+
+  void setLocalStorage(key, value) async {
+    final sharedPref = await SharedPreferences.getInstance();
+    sharedPref.setString(key, value);
+  }
+
   //https://stackoverflow.com/questions/45031499/how-to-get-unique-device-id-in-flutter
-  Future<String> getDeviceId() async {
+  Future<String> _getDeviceId() async {
     String identifier = randomString(10);
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
     try {

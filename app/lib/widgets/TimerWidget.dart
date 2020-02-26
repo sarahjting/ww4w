@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'Loading.dart';
 import 'dart:async';
 import '../models/Cycle.dart';
+import '../models/Break.dart';
 import '../utils/CycleManager.dart';
+import '../utils/BreakManager.dart';
 import 'dart:math' show pi;
 
 class TimerWidget extends StatefulWidget {
@@ -17,16 +19,18 @@ class TimerWidget extends StatefulWidget {
 class _TimerState extends State<TimerWidget> {
   bool _isLoading = true;
   Cycle _currentCycle;
-  CycleManager _manager;
+  Break _currentBreak;
+  CycleManager _cycleManager;
+  BreakManager _breakManager;
   int _secondsLeft;
   var _setGems;
   var _timer;
 
   _TimerState(this._setGems);
 
-  void _handleStart(context, String tag) async {
+  void _handleStartCycle(context, String tag) async {
     setState(() => _isLoading = true);
-    Map<String, dynamic> res = await _manager.start(tag: tag);
+    Map<String, dynamic> res = await _cycleManager.start(tag: tag);
     if (res["Status"]) {
       _popSnackbar(context, "Cycle started. Time to work!");
       setState(() {
@@ -42,14 +46,15 @@ class _TimerState extends State<TimerWidget> {
     }
   }
 
-  void _handleEnd(context) async {
+  void _handleEndCycle(context) async {
     setState(() => _isLoading = true);
-    Map<String, dynamic> res = await _manager.end();
+    Map<String, dynamic> res = await _cycleManager.end();
     if (res["Status"]) {
       _popSnackbar(context, "Great work! You've gained a gem.");
       _setGems(res["Gems"]);
-      setState(() {
+      setState(() async {
         _currentCycle = null;
+        _currentBreak = await _breakManager.start();
         _isLoading = false;
       });
     } else {
@@ -60,9 +65,9 @@ class _TimerState extends State<TimerWidget> {
     }
   }
 
-  void _handleCancel(context) async {
+  void _handleCancelCycle(context) async {
     setState(() => _isLoading = true);
-    Map<String, dynamic> res = await _manager.cancel();
+    Map<String, dynamic> res = await _cycleManager.cancel();
     if (res["Status"]) {
       _popSnackbar(context, "Work cycle has been canceled.");
       setState(() {
@@ -77,23 +82,46 @@ class _TimerState extends State<TimerWidget> {
     }
   }
 
+  void _handleCancelBreak(context) async {
+    _breakManager.cancel();
+    _popSnackbar(context, "Break cycle has been canceled.");
+    setState(() {
+      _currentBreak = null;
+      _isLoading = false;
+    });
+  }
+
   void _popSnackbar(context, text) async {
     Scaffold.of(context).hideCurrentSnackBar();
     Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
   void _updateCountdown() {
-    if (_currentCycle == null) return;
-    setState(() => _secondsLeft = _currentCycle.secondsLeft());
+    if (_currentCycle == null && _currentBreak == null) return;
+    if (_currentCycle != null) {
+      setState(() => _secondsLeft = _currentCycle.secondsLeft());
+    } else if (_currentBreak != null) {
+      setState(() {
+        _secondsLeft = _currentBreak.secondsLeft();
+        if (_secondsLeft == 0) {
+          _currentBreak = null;
+          _breakManager.cancel();
+        }
+      });
+      if (_secondsLeft == 0) return;
+    }
     _timer = Timer(Duration(seconds: 1), _updateCountdown);
   }
 
   void _loadTimer() async {
-    Map<String, dynamic> res = await _manager.current();
-    _setGems(res["Gems"]);
+    Map<String, dynamic> cycleRes = await _cycleManager.current();
+    Break breakRes = await _breakManager.current();
+    _setGems(cycleRes["Gems"]);
     setState(() {
-      if (res["Cycle"] != null) {
-        _currentCycle = res["Cycle"];
+      if (cycleRes["Cycle"] != null) {
+        _currentCycle = cycleRes["Cycle"];
+      } else if (breakRes != null) {
+        _currentBreak = breakRes;
       }
       _isLoading = false;
     });
@@ -103,7 +131,8 @@ class _TimerState extends State<TimerWidget> {
   @override
   void initState() {
     super.initState();
-    _manager = new CycleManager();
+    _cycleManager = new CycleManager();
+    _breakManager = new BreakManager();
     _loadTimer();
   }
 
@@ -118,12 +147,54 @@ class _TimerState extends State<TimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (this._isLoading)
+    if (this._isLoading) {
       return Loading();
-    else if (this._currentCycle != null)
-      return _buildActive(context);
-    else
+    } else if (this._currentCycle != null) {
+      return _buildActive(
+        context,
+        countdown: this._currentCycle.countDowner(),
+        progress: this._currentCycle.progress(),
+        tag: this._currentCycle.tag,
+        completeButton: this._secondsLeft == 0
+            ? Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: RaisedButton(
+                  onPressed: () => _handleEndCycle(context),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    child: Text(
+                      "Complete Cycle",
+                      style: TextStyle(fontSize: 30.0, color: Colors.white),
+                    ),
+                  ),
+                  textColor: Colors.white,
+                  color: Colors.pink,
+                ),
+              )
+            : null,
+        cancelButton: RaisedButton(
+          onPressed: () => _handleCancelCycle(context),
+          child: Text("Cancel", style: TextStyle(fontSize: 20.0)),
+          textColor: Colors.grey[500],
+          color: Colors.grey[200],
+        ),
+      );
+    } else if (this._currentBreak != null) {
+      return _buildActive(
+        context,
+        countdown: this._currentBreak.countDowner(),
+        progress: this._currentBreak.progress(),
+        tag: "Take a break!",
+        cancelButton: RaisedButton(
+          onPressed: () => _handleCancelBreak(context),
+          child: Text("Cancel", style: TextStyle(fontSize: 20.0)),
+          textColor: Colors.grey[500],
+          color: Colors.grey[200],
+        ),
+      );
+    } else {
       return _buildInactive(context);
+    }
   }
 
   Widget _buildInactive(BuildContext context) {
@@ -138,13 +209,13 @@ class _TimerState extends State<TimerWidget> {
               controller: tagController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Task',
+                labelText: "What're you working on?",
               ),
             ),
             FractionallySizedBox(
               widthFactor: 1.0,
               child: RaisedButton(
-                onPressed: () => _handleStart(context, tagController.text),
+                onPressed: () => _handleStartCycle(context, tagController.text),
                 color: Colors.pink,
                 child: Text(
                   'Start Work',
@@ -158,46 +229,31 @@ class _TimerState extends State<TimerWidget> {
     );
   }
 
-  Widget _buildActive(BuildContext context) {
+  Widget _buildActive(BuildContext context,
+      {String countdown,
+      String tag,
+      double progress,
+      Widget completeButton,
+      Widget cancelButton}) {
     List<Widget> widgets = <Widget>[];
     widgets.add(Text(
-      _currentCycle.countDowner(),
+      countdown,
       style: Theme.of(context).textTheme.headline1,
     ));
-    if (_currentCycle.tag != "") {
+    if (tag != "") {
       widgets.add(Padding(
           padding: EdgeInsets.only(bottom: 20),
           child: Text(
-            _currentCycle.tag,
+            tag,
             style: TextStyle(fontSize: 30.0, color: Colors.grey[500]),
           )));
     }
-    if (_secondsLeft == 0) {
-      widgets.add(
-        Padding(
-          padding: EdgeInsets.only(bottom: 10),
-          child: RaisedButton(
-            onPressed: () => _handleEnd(context),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: Text(
-                "Complete Cycle",
-                style: TextStyle(fontSize: 30.0, color: Colors.white),
-              ),
-            ),
-            textColor: Colors.white,
-            color: Colors.pink,
-          ),
-        ),
-      );
+    if (completeButton != null) {
+      widgets.add(completeButton);
     } else {
       widgets.add(Text(""));
     }
-    widgets.add(RaisedButton(
-        onPressed: () => _handleCancel(context),
-        child: Text("Cancel", style: TextStyle(fontSize: 20.0)),
-        textColor: Colors.grey[500],
-        color: Colors.grey[200]));
+    widgets.add(cancelButton);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -214,7 +270,7 @@ class _TimerState extends State<TimerWidget> {
                             padding: EdgeInsets.all(50.0),
                             child: CustomPaint(
                               painter: TimerPainter(
-                                progress: _currentCycle.progress(),
+                                progress: progress,
                               ),
                             ),
                           ),

@@ -1,4 +1,6 @@
-class Cycle {
+import './Timer.dart';
+
+class Cycle extends Timer {
   final int id;
   final String tag;
   final DateTime createdAt;
@@ -17,20 +19,8 @@ class Cycle {
     );
   }
 
-  int secondsLeft() {
-    final int secondsLeft =
-        (60 * 25) - DateTime.now().difference(createdAt).inSeconds;
-    if (secondsLeft < 0) return 0;
-    return secondsLeft;
-  }
-
-  String countDowner() {
-    int secondsLeft = this.secondsLeft();
-    int minutesLeft = (secondsLeft / 60).floor();
-    secondsLeft = secondsLeft - minutesLeft * 60;
-    return minutesLeft.toString().padLeft(2, "0") +
-        ":" +
-        secondsLeft.toString().padLeft(2, "0");
+  int secondsTotal() {
+    return 60 * 25;
   }
 
   bool isToday() {
@@ -39,12 +29,5 @@ class Cycle {
             .difference(DateTime(now.year, now.month, now.day))
             .inDays ==
         0;
-  }
-
-  double progress() {
-    final double progress =
-        DateTime.now().difference(createdAt).inSeconds / (60 * 25);
-    if (progress > 1) return 1.0;
-    return progress;
   }
 }

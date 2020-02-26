@@ -39,7 +39,7 @@ class _GachaState extends State<GachaWidget> {
     if (waifu != null && error == null) {
       content = AlertDialog(
         content: Container(
-          height: 418,
+          height: 450,
           child: Column(children: <Widget>[
             Image.network(
               waifu.imageUrl,
