@@ -29,3 +29,17 @@ CREATE TABLE cycles(
   tag_id INTEGER NOT NULL DEFAULT 0,
   is_ended BOOLEAN NOT NULL DEFAULT FALSE
 );
+CREATE TABLE canons(
+  id SERIAL PRIMARY KEY,
+  mal_id INTEGER NOT NULL,
+  mal_type VARCHAR(10) NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  url VARCHAR(200) NOT NULL,
+  image_url VARCHAR(200) NOT NULL,
+  UNIQUE(mal_type, mal_id)
+);
+CREATE TABLE account_canons(
+  account_id INTEGER NOT NULL,
+  canon_id INTEGER NOT NULL,
+  PRIMARY KEY(account_id, canon_id)
+);

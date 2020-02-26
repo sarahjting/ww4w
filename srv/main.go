@@ -13,6 +13,7 @@ import (
 
 	"github.com/sarahjting/ww4w/config"
 	"github.com/sarahjting/ww4w/api/waifus"
+	"github.com/sarahjting/ww4w/api/canons"
 	"github.com/sarahjting/ww4w/api/cycles"
 	"github.com/sarahjting/ww4w/models/accounts"
 )
@@ -54,13 +55,19 @@ func main() {
 	r.HandleFunc("/generate", waifus.GetGenerate()).Methods("GET")
 	
     r.HandleFunc("/api/waifus/gacha", waifus.PostGacha(db)).Methods("POST")
-    r.HandleFunc("/api/waifus/list", waifus.PostWaifus(db)).Methods("POST")
+	r.HandleFunc("/api/waifus/list", waifus.PostWaifus(db)).Methods("POST")
+	
+    r.HandleFunc("/api/canons/list", canons.PostList(db)).Methods("POST")
+	r.HandleFunc("/api/canons/add", canons.PostAdd(db)).Methods("POST")
+	r.HandleFunc("/api/canons/remove", canons.PostRemove(db)).Methods("POST")
+	
     r.HandleFunc("/api/cycles/tags", cycles.PostTags(db)).Methods("POST")
     r.HandleFunc("/api/cycles/start", cycles.PostStart(db)).Methods("POST")
     r.HandleFunc("/api/cycles/end", cycles.PostEnd(db)).Methods("POST")
     r.HandleFunc("/api/cycles/cancel", cycles.PostCancel(db)).Methods("POST")
     r.HandleFunc("/api/cycles/list", cycles.PostList(db)).Methods("POST")
-    r.HandleFunc("/api/cycles/current", cycles.PostCurrent(db)).Methods("POST")
+	r.HandleFunc("/api/cycles/current", cycles.PostCurrent(db)).Methods("POST")
+	
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
 	http.Handle("/", r)
 	
