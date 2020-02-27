@@ -1,5 +1,5 @@
 class Canon {
-  final double malId;
+  final int malId;
   final String title;
   final String url;
   final String imageUrl;

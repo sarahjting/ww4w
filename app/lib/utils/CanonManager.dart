@@ -23,11 +23,11 @@ class CanonManager extends Manager {
     return parsed["Canons"];
   }
 
-  Future<void> add({String malType, double malId}) async {
+  Future<void> add({String malType, int malId}) async {
     await this.post("canons/add", {"mal_type": malType, "mal_id": malId});
   }
 
-  Future<void> remove({String malType, double malId}) async {
+  Future<void> remove({String malType, int malId}) async {
     await this.post("canons/remove", {"mal_type": malType, "mal_id": malId});
   }
 }
