@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'Loading.dart';
 import '../models/Canon.dart';
 import '../utils/CanonManager.dart';
-import 'package:intl/intl.dart';
+import 'dart:async';
 import './Loading.dart';
 
 class SettingsWidget extends StatefulWidget {
@@ -120,11 +120,15 @@ class _SelectorState extends State<_SelectorWidget> {
   CanonManager _manager;
   var _reload;
   bool _isLoading = true;
+  var _searchTimeout;
 
   _SelectorState(this._malType, this._reload);
 
-  void _load() async {
-    List<Canon> res = await _manager.top(type: _malType);
+  void _handleUpdateSearch(search) => _load(search);
+
+  void _load([String search]) async {
+    setState(() => _isLoading = true);
+    List<Canon> res = await _manager.top(type: _malType, search: search);
     setState(() {
       _canons = res;
       _isLoading = false;
@@ -140,28 +144,64 @@ class _SelectorState extends State<_SelectorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? Loading() : _build(context);
-  }
-
-  Widget _build(BuildContext context) {
     List<Widget> children = new List<Widget>();
-    _canons.forEach((canon) => children.add(Card(
-          child: ListTile(
-              leading: Image.network(canon.imageUrl),
-              title: Text(canon.title),
-              trailing: Icon(Icons.add_circle),
-              onTap: () async {
-                await _manager.add(malType: _malType, malId: canon.malId);
-                Navigator.pop(context);
-                _reload();
-              }),
-        )));
+    children.add(_buildSearchBar(context));
+    if (_isLoading) {
+      children.add(Loading());
+    } else {
+      _canons.forEach((canon) => children.add(_buildRow(context, canon)));
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Select " + _malType),
       ),
       body: Center(
         child: ListView(children: children),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (_searchTimeout != null) {
+      _searchTimeout.cancel();
+      _searchTimeout = null;
+    }
+  }
+
+  Widget _buildRow(BuildContext context, Canon canon) {
+    return Card(
+      child: ListTile(
+          leading: Image.network(canon.imageUrl),
+          title: Text(canon.title),
+          trailing: Icon(Icons.add_circle),
+          onTap: () async {
+            setState(() => _isLoading = true);
+            await _manager.add(malType: _malType, malId: canon.malId);
+            Navigator.pop(context);
+            _reload();
+          }),
+    );
+  }
+
+  Widget _buildSearchBar(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.0),
+      child: Card(
+        child: TextField(
+          decoration: InputDecoration(
+            hintText: "Search",
+            contentPadding: EdgeInsets.all(10.0),
+          ),
+          onChanged: (item) {
+            setState(() {
+              if (_searchTimeout != null) _searchTimeout.cancel();
+              _searchTimeout =
+                  Timer(Duration(seconds: 1), () => _handleUpdateSearch(item));
+            });
+          },
+        ),
       ),
     );
   }

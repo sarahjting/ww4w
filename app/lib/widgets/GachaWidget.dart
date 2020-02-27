@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'Loading.dart';
-import 'dart:async';
 import '../models/Waifu.dart';
 import '../utils/WaifuManager.dart';
 
