@@ -16,7 +16,7 @@ func Add(db *sql.DB, accountId int, malID int, malType string) (canon Canon, ret
 		err = db.QueryRow(`INSERT INTO canons(mal_id, mal_type, title, url, image_url) VALUES($1, $2, $3, $4, $5) RETURNING id`,
 			canon.MALID, canon.MALType, canon.Title, canon.URL, canon.ImageURL).Scan(&canonID)
 	}
-	rows, returnError = db.Query(`INSERT INTO account_canons(account_id, canon_id) VALUES($1, $2) ON CONFLICT DO NOTHING`, accountId, canonID)
+	_, returnError = db.Query(`INSERT INTO account_canons(account_id, canon_id) VALUES($1, $2) ON CONFLICT DO NOTHING`, accountId, canonID)
 	return
 }	
 
