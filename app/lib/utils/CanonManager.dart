@@ -14,22 +14,13 @@ class CanonManager extends Manager {
   }
 
   Future<List<Canon>> top({String type, String search}) async {
-    if (type != 'anime' && type != 'manga') return [] as List<Canon>;
-    String url = "", key = "results";
-    if (search != null && search != "") {
-      url = "https://api.jikan.moe/v3/search/" +
-          type +
-          "?q=" +
-          Uri.encodeFull(search);
-    } else {
-      url = "https://api.jikan.moe/v3/top/" + type;
-      key = "top";
-    }
-
-    http.Response res = await http.get(url);
+    http.Response res =
+        await this.post("canons/top", {"mal_type": type, "search": search});
     final parsed = json.decode(res.body) as Map<String, dynamic>;
-    return parsed[key].map<Canon>((json) => Canon.fromMAL(type, json)).toList()
-        as List<Canon>;
+    if (parsed["Canons"] != null)
+      parsed["Canons"] =
+          parsed["Canons"].map<Canon>((json) => Canon.fromJson(json)).toList();
+    return parsed["Canons"];
   }
 
   Future<void> add({String malType, double malId}) async {

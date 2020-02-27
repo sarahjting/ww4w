@@ -47,7 +47,7 @@ class Manager {
 
   //https://stackoverflow.com/questions/45031499/how-to-get-unique-device-id-in-flutter
   Future<String> _getDeviceId() async {
-    String identifier = randomString(10);
+    String identifier = randomAlphaNumeric(10);
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
     try {
       if (Platform.isAndroid) {
