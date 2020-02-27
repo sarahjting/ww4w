@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/sarahjting/ww4w/models/canons"
+	"github.com/gorilla/context"
 	"database/sql"
 )
 
@@ -16,10 +17,18 @@ type PostTopResults struct {
 
 func PostTop(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		canons := canons.Top(db)
+
+		body := context.Get(r, "body").(map[string]interface{})
+		var canonList []canons.Canon
+		if(body["mal_type"] == nil) {
+			canonList = canons.RandomTop(db)
+		} else {
+			canonList = canons.Top(db, body["mal_type"].(string))
+		}
+
 		js, err := json.Marshal(PostTopResults{
 			Status: true,
-			Canons: canons,
+			Canons: canonList,
 		})
 		if err != nil {
 			log.Fatal(err)

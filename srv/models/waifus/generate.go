@@ -25,7 +25,7 @@ func Generate(db *sql.DB, accountId int) Waifu {
 	// load canon list
 	canonList := canons.List(db, accountId)
 	if(canonList == nil) {
-		canonList = canons.Top(db)
+		canonList = canons.RandomTop(db)
 	}
 
 	// grab a random canon

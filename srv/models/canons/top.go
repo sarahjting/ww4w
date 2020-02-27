@@ -3,21 +3,13 @@ package canons
 import (
 	"database/sql"
 	"net/http"
-	"math/rand"
 	"io/ioutil"
 	"encoding/json"
+	"math/rand"
 )
 
-func Top(db *sql.DB) (canons []Canon) {
-	url := ""
-	malType := "anime"
-	if(rand.Int() % 2 == 0) {
-		url = "https://api.jikan.moe/v3/top/anime"
-	} else {
-		url = "https://api.jikan.moe/v3/top/manga"
-		malType = "manga"
-	}
-	
+func Top(db *sql.DB, malType string) (canons []Canon) {
+	url := "https://api.jikan.moe/v3/top/" + malType
 	resp, _ := http.Get(url)
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
@@ -37,4 +29,12 @@ func Top(db *sql.DB) (canons []Canon) {
 		canons = append(canons, canon)
 	}
 	return
+}	
+
+func RandomTop(db *sql.DB) []Canon {
+	malType := "anime"
+	if(rand.Int() % 2 == 0) {
+		malType = "manga"
+	} 
+	return Top(db, malType)
 }	
