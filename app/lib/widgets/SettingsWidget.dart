@@ -124,7 +124,6 @@ class _SelectorState extends State<_SelectorWidget> {
   _SelectorState(this._malType, this._reload);
 
   void _load() async {
-    print('loading dialog');
     List<Canon> res = await _manager.top(type: _malType);
     setState(() {
       _canons = res;

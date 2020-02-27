@@ -2,13 +2,11 @@ package waifus
 import (
 	"database/sql"
 	"errors"
-	"log"
 )
 
 func Gacha(db *sql.DB, accountId int) (returnWaifu Waifu, returnGems int, returnError error) {
 	err := db.QueryRow(`UPDATE accounts SET gems = gems - 1 WHERE id = $1 AND gems > 0 RETURNING gems`, accountId).Scan(&returnGems)
 	if(err != nil) {
-		log.Println(err)
 		returnError = errors.New("Insufficient gems.")
 		return
 	}

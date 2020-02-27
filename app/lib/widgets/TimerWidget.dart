@@ -203,7 +203,6 @@ class _TimerState extends State<TimerWidget> {
   }
 
   Widget _buildInactive(BuildContext context) {
-    print(_tags);
     final tagController = TextEditingController();
     return Center(
       child: Padding(
