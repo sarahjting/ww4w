@@ -25,7 +25,7 @@ func Generate(db *sql.DB, accountId int) Waifu {
 	// load canon list
 	canonList := canons.List(db, accountId)
 	if(canonList == nil) {
-		canonList = canons.Top()
+		canonList = canons.Top(db)
 	}
 
 	// grab a random canon
@@ -51,5 +51,9 @@ func Generate(db *sql.DB, accountId int) Waifu {
 	value := getRandomElement(dat["characters"].([]interface{})).(map[string]interface{})
 
 	// create waifu
-	return MAL2Waifu(value);
+	waifu := MAL2Waifu(value)
+	waifu.CanonID = canon.ID
+	waifu.CanonURL = canon.URL
+	waifu.Canon = canon.Title
+	return waifu
 }

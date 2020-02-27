@@ -5,6 +5,9 @@ type Waifu struct {
 	Name string
 	ImageURL string
 	URL string
+	CanonID int
+	CanonURL string
+	Canon string
 }
 
 func MAL2Waifu(mal map[string]interface{}) Waifu {

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/sarahjting/ww4w/models/canons"
+	"database/sql"
 )
 
 type PostTopResults struct {
@@ -13,9 +14,9 @@ type PostTopResults struct {
 	Canons []canons.Canon
 }
 
-func PostTop() func(w http.ResponseWriter, r *http.Request) {
+func PostTop(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		canons := canons.Top()
+		canons := canons.Top(db)
 		js, err := json.Marshal(PostTopResults{
 			Status: true,
 			Canons: canons,

@@ -8,7 +8,8 @@ CREATE TABLE waifus(
   mal_id INTEGER UNIQUE NOT NULL,
   name VARCHAR (100) NOT NULL,
   url VARCHAR (200) NOT NULL,
-  image_url VARCHAR(200) NOT NULL
+  image_url VARCHAR(200) NOT NULL,
+  canon_id INTEGER NOT NULL
 );
 CREATE TABLE account_waifus(
   account_id INTEGER NOT NULL,

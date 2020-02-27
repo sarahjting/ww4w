@@ -1,6 +1,7 @@
 package canons
 
 type Canon struct {
+	ID int
 	MALType string
 	MALID int
 	Title string

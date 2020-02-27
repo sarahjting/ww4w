@@ -58,7 +58,7 @@ func main() {
 	r.HandleFunc("/api/waifus/list", waifus.PostWaifus(db)).Methods("POST")
 	
     r.HandleFunc("/api/canons/list", canons.PostList(db)).Methods("POST")
-	r.HandleFunc("/api/canons/top", canons.PostTop()).Methods("POST")
+	r.HandleFunc("/api/canons/top", canons.PostTop(db)).Methods("POST")
 	r.HandleFunc("/api/canons/add", canons.PostAdd(db)).Methods("POST")
 	r.HandleFunc("/api/canons/remove", canons.PostRemove(db)).Methods("POST")
 	
