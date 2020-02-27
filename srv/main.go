@@ -46,6 +46,8 @@ func allowCORS(next http.Handler) http.Handler {
 func main() {
 	config := config.GetConf()
 	db, err := sql.Open("postgres", config.DBUrl)
+	defer db.Close()
+	
 	if(err != nil) {
 		log.Fatal(err)
 	}    

@@ -15,7 +15,6 @@ func List(db *sql.DB, accountId int) (waifus []Waifu) {
 	if(err != nil) {
 		log.Fatal(err)
 	}
-	defer rows.Close()
 	for rows.Next() {
 		var malID int
 		var name string

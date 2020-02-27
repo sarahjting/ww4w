@@ -19,7 +19,6 @@ func Tags(db *sql.DB, accountId int, query string) (tags []string) {
 	if(err != nil) {
 		log.Fatal(err)
 	}
-	defer rows.Close()
 	for rows.Next() {
 		var tag string
 		err = rows.Scan(&tag)

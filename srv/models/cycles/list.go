@@ -15,7 +15,6 @@ func List(db *sql.DB, accountId int) (cycles []Cycle) {
 	if(err != nil) {
 		log.Fatal(err)
 	}
-	defer rows.Close()
 	for rows.Next() {
 		var id int
 		var createdAt string

@@ -2,6 +2,7 @@ package waifus
 import (
 	"database/sql"
 	"errors"
+	"log"
 )
 
 func Gacha(db *sql.DB, accountId int) (returnWaifu Waifu, returnGems int, returnError error) {
@@ -16,6 +17,9 @@ func Gacha(db *sql.DB, accountId int) (returnWaifu Waifu, returnGems int, return
 		db.Query(`INSERT INTO waifus(mal_id, name, image_url, url, canon_id) VALUES($1, $2, $3, $4, $5)`,
 			returnWaifu.MALID, returnWaifu.Name, returnWaifu.ImageURL, returnWaifu.URL, returnWaifu.CanonID)
 	}
-	db.Query(`INSERT INTO account_waifus(account_id, waifu_id) VALUES($1, $2)`, accountId, returnWaifu.MALID)
+	_, err = db.Query(`INSERT INTO account_waifus(account_id, waifu_id) VALUES($1, $2)`, accountId, returnWaifu.MALID)
+	if(err != nil) {
+		log.Fatal(err)
+	}
 	return
 }	
