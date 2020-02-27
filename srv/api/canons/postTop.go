@@ -20,10 +20,14 @@ func PostTop(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 
 		body := context.Get(r, "body").(map[string]interface{})
 		var canonList []canons.Canon
+		search := ""
+		if(body["search"] != nil) {
+			search = body["search"].(string)
+		}
 		if(body["mal_type"] == nil) {
 			canonList = canons.RandomTop(db)
 		} else {
-			canonList = canons.Top(db, body["mal_type"].(string))
+			canonList = canons.Top(db, body["mal_type"].(string), search)
 		}
 
 		js, err := json.Marshal(PostTopResults{

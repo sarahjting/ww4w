@@ -6,17 +6,25 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"math/rand"
+	"net/url"
 )
 
-func Top(db *sql.DB, malType string) (canons []Canon) {
-	url := "https://api.jikan.moe/v3/top/" + malType
-	resp, _ := http.Get(url)
+func Top(db *sql.DB, malType string, search string) (canons []Canon) {
+	getUrl := ""
+	key := "top"
+	if(search == "") {
+		getUrl = "https://api.jikan.moe/v3/top/" + malType
+	} else {
+		getUrl = "https://api.jikan.moe/v3/search/" + malType + "?q=" + url.QueryEscape(search)
+		key = "results"
+	}
+	resp, _ := http.Get(getUrl)
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	var dat map[string]interface{}
 	json.Unmarshal(body, &dat)
-	for _, x := range dat["top"].([]interface{}) {
+	for _, x := range dat[key].([]interface{}) {
 		var canonId int
 		var canon Canon
 		canon = MAL2Canon(malType, x.(map[string]interface{}))
@@ -36,5 +44,5 @@ func RandomTop(db *sql.DB) []Canon {
 	if(rand.Int() % 2 == 0) {
 		malType = "manga"
 	} 
-	return Top(db, malType)
+	return Top(db, malType, "")
 }	
