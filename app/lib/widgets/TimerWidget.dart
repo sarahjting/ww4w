@@ -215,6 +215,7 @@ class _TimerState extends State<TimerWidget> {
               suggestions: _tags,
               itemSubmitted: (item) => tagController.text = item,
               submitOnSuggestionTap: false,
+              textChanged: (item) {},
               minLength: 0,
               itemBuilder: (context, suggestion) => new Padding(
                   child: new ListTile(title: new Text(suggestion)),

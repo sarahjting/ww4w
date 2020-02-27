@@ -5,7 +5,7 @@ import (
 )
 
 func List(db *sql.DB, accountId int) (cycles []Cycle) {
-	rows, err := db.Query(`SELECT cycles.id AS ID, cycles.created_at AS CreatedAt, cycles.ended_at AS EndedAt, tags.tag AS Tag, is_ended AS IsEnded
+	rows, err := db.Query(`SELECT cycles.id AS ID, cycles.created_at AS CreatedAt, cycles.ended_at AS EndedAt,  COALESCE(tags.tag, '') AS Tag, is_ended AS IsEnded
 		FROM cycles 
 		LEFT JOIN tags ON cycles.tag_id = tags.id
 		WHERE cycles.account_id = $1 

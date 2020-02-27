@@ -152,8 +152,8 @@ class _SelectorState extends State<_SelectorWidget> {
               trailing: Icon(Icons.add_circle),
               onTap: () async {
                 await _manager.add(malType: _malType, malId: canon.malId);
-                _reload();
                 Navigator.pop(context);
+                _reload();
               }),
         )));
     return Scaffold(

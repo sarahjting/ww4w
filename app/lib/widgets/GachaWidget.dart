@@ -38,17 +38,20 @@ class _GachaState extends State<GachaWidget> {
 
     if (waifu != null && error == null) {
       content = AlertDialog(
-        content: Container(
-          height: 450,
-          child: Column(children: <Widget>[
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
             Image.network(
               waifu.imageUrl,
             ),
             Padding(
               padding: EdgeInsets.only(top: 50.0),
-              child: Text("You've pulled " + waifu.name + "!"),
+              child: Text(
+                "You've pulled ${waifu.name}\n from ${waifu.canon}!",
+                textAlign: TextAlign.center,
+              ),
             ),
-          ]),
+          ],
         ),
         actions: [
           FlatButton(
