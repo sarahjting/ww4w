@@ -44,12 +44,14 @@ class AppState extends State<App> {
         length: 5,
         child: Scaffold(
           appBar: AppBar(
-              title: Text("WW4W"),
+              centerTitle: true,
+              title: Image.asset('logo.png', fit: BoxFit.scaleDown, height: 32),
               actions: <Widget>[
-                FlatButton(
+                FlatButton.icon(
                     textColor: Colors.white,
                     onPressed: () => {},
-                    child: Text(_gems.toString() + " Gems")),
+                    icon: Icon(Icons.flare),
+                    label: Text(_gems.toString())),
               ],
               bottom: TabBar(isScrollable: false, tabs: [
                 Tab(icon: Icon(Icons.alarm)),
