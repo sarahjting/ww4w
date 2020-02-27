@@ -10,7 +10,7 @@ func Gacha(db *sql.DB, accountId int) (returnWaifu Waifu, returnGems int, return
 		returnError = errors.New("Insufficient gems.")
 		return
 	}
-	returnWaifu = Generate()
+	returnWaifu = Generate(db, accountId)
 	err = db.QueryRow(`SELECT waifus.mal_id FROM waifus WHERE waifus.mal_id = $1`, returnWaifu.MALID).Scan()
 	if(err != nil) {
 		db.Query(`INSERT INTO waifus(mal_id, name, image_url, url) VALUES($1, $2, $3, $4)`,

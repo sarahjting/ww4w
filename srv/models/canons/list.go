@@ -24,7 +24,7 @@ func List(db *sql.DB, accountId int) (canons []Canon) {
 		if(err != nil) {
 			log.Fatal(err)
 		}
-		canons = append(canons, Canon{MALID:float64(MALID), MALType: MALType, Title:Title, URL:URL, ImageURL:ImageURL})
+		canons = append(canons, Canon{MALID:int(MALID), MALType: MALType, Title:Title, URL:URL, ImageURL:ImageURL})
 	}
 	return
 }	

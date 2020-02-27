@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func Add(db *sql.DB, accountId int, malID float64, malType string) (canon Canon, returnError error) {
+func Add(db *sql.DB, accountId int, malID int, malType string) (canon Canon, returnError error) {
 	var canonID int
 	err := db.QueryRow(`SELECT canons.id FROM canons WHERE canons.mal_id = $1 AND canons.mal_type = $2`, malID, malType).Scan(&canonID)
 	if(err != nil) {
@@ -20,11 +20,11 @@ func Add(db *sql.DB, accountId int, malID float64, malType string) (canon Canon,
 	return
 }	
 
-func loadCanon(malID float64, malType string) (canon Canon) {
+func loadCanon(malID int, malType string) (canon Canon) {
 	if(malType != "manga" && malType != "anime") {
 		return
 	}
-	url := "https://api.jikan.moe/v3/" + malType + "/" + strconv.FormatFloat(malID, 'g', 1, 64)
+	url := "https://api.jikan.moe/v3/" + malType + "/" + strconv.Itoa(malID)
 	
 	// load anime/manga from jikan
 	resp, _ := http.Get(url)

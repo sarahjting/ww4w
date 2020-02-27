@@ -52,12 +52,13 @@ func main() {
 	
 	r := mux.NewRouter()
 
-	r.HandleFunc("/generate", waifus.GetGenerate()).Methods("GET")
+	r.HandleFunc("/generate", waifus.GetGenerate(db)).Methods("GET")
 	
     r.HandleFunc("/api/waifus/gacha", waifus.PostGacha(db)).Methods("POST")
 	r.HandleFunc("/api/waifus/list", waifus.PostWaifus(db)).Methods("POST")
 	
     r.HandleFunc("/api/canons/list", canons.PostList(db)).Methods("POST")
+	r.HandleFunc("/api/canons/top", canons.PostTop()).Methods("POST")
 	r.HandleFunc("/api/canons/add", canons.PostAdd(db)).Methods("POST")
 	r.HandleFunc("/api/canons/remove", canons.PostRemove(db)).Methods("POST")
 	

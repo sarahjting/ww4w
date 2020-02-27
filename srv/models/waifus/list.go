@@ -22,7 +22,7 @@ func List(db *sql.DB, accountId int) (waifus []Waifu) {
 		if(err != nil) {
 			log.Fatal(err)
 		}
-		waifus = append(waifus, Waifu{MALID:float64(malID), Name: name, ImageURL: imageURL, URL: url})
+		waifus = append(waifus, Waifu{MALID:int(malID), Name: name, ImageURL: imageURL, URL: url})
 	}
 	return
 }	
